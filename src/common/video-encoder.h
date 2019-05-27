@@ -65,24 +65,26 @@ protected:
 	VideoEncoder();
 };
 
+public struct FrameRefMode {
+	uint32_t				Base;
+	uint32_t				Enhanced;
+	bool					EnablePred;
+	FrameRefMode(uint32_t base, uint32_t enhanced, bool enablepred)
+		: Base(base), Enhanced(enhanced), EnablePred(enablepred) {}
+};
+
+public struct IntraRefreshParam {
+	bool					EnableRefresh;
+	bool					EnableISlice;
+	uint32_t				RefreshLineNum;
+	uint32_t				ReqIQp;
+	IntraRefreshParam(bool refresh_en, bool islice_en, uint32_t linenum, uint32_t reqiqp)
+		: EnableRefresh(refresh_en), EnableISlice(islice_en), RefreshLineNum(linenum), ReqIQp(reqiqp) {}
+};
+
 class H264VideoEncoder : public virtual VideoEncoder
 {
 public:
-	struct FrameRefMode264 {
-		uint32_t				Base;
-		uint32_t				Enhanced;
-		bool					EnablePred;
-		FrameRefMode264(uint32_t base, uint32_t enhanced, bool enablepred)
-			: Base(base), Enhanced(enhanced), EnablePred(enablepred) {}
-	};
-	struct IntraRefreshParam264 {
-		bool					EnableRefresh;
-		bool					EnableISlice;
-		uint32_t				RefreshLineNum;
-		uint32_t				ReqIQp;
-		IntraRefreshParam264(bool refresh_en, bool islice_en, uint32_t linenum, uint32_t reqiqp)
-			: EnableRefresh(refresh_en), EnableISlice(islice_en), RefreshLineNum(linenum), ReqIQp(reqiqp) {}
-	};
 public:
 	virtual ~H264VideoEncoder();
 
@@ -95,10 +97,10 @@ public:
 	virtual uint32_t			getMaxQP();
 	virtual void				setMaxQP(uint32_t value);
 
-	virtual void				setFrameRefMode(FrameRefMode264 value);
-	virtual FrameRefMode264		getFrameRefMode();
-	virtual void				setIntraRefresh(IntraRefreshParam264 value);
-	virtual IntraRefreshParam264	getIntraRefresh();
+	virtual void				setFrameRefMode(FrameRefMode value);
+	virtual FrameRefMode		getFrameRefMode();
+	virtual void				setIntraRefresh(IntraRefreshParam value);
+	virtual IntraRefreshParam	getIntraRefresh();
 
 protected:
 	H264VideoEncoder();
@@ -106,22 +108,6 @@ protected:
 
 class H265VideoEncoder : public virtual VideoEncoder
 {
-public:
-		struct FrameRefMode265 {
-		uint32_t				Base;
-		uint32_t				Enhanced;
-		bool					EnablePred;
-		FrameRefMode265(uint32_t base, uint32_t enhanced, bool enablepred)
-			: Base(base), Enhanced(enhanced), EnablePred(enablepred) {}
-	};
-	struct IntraRefreshParam265 {
-		bool					EnableRefresh;
-		bool					EnableISlice;
-		uint32_t				RefreshLineNum;
-		uint32_t				ReqIQp;
-		IntraRefreshParam265(bool refresh_en, bool islice_en, uint32_t linenum, uint32_t reqiqp)
-			: EnableRefresh(refresh_en), EnableISlice(islice_en), RefreshLineNum(linenum), ReqIQp(reqiqp) {}
-	};
 public:
 	virtual ~H265VideoEncoder();
 
@@ -134,10 +120,10 @@ public:
 	virtual uint32_t			getMaxQP();
 	virtual void				setMaxQP(uint32_t value);
 
-	virtual void				setFrameRefMode(FrameRefMode265 value);
-	virtual FrameRefMode265		getFrameRefMode();
-	virtual void				setIntraRefresh(IntraRefreshParam265 value);
-	virtual IntraRefreshParam265	getIntraRefresh();
+	virtual void				setFrameRefMode(FrameRefMode value);
+	virtual FrameRefMode		getFrameRefMode();
+	virtual void				setIntraRefresh(IntraRefreshParam value);
+	virtual IntraRefreshParam	getIntraRefresh();
 
 protected:
 	H265VideoEncoder();
