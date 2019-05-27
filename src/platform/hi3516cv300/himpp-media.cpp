@@ -416,7 +416,13 @@ MediaElement* HimppMedia::buildElementPipe(const std::string& description)
 			} else {
 				std::cout << name << ": " << "encoding not specified, using default(G711A)" << std::endl;
 			}
-			add_element(last_element, name, HimppAencChan(HIMPP_AUDIO_ELEMENT(last_element), encoding, index));
+			if (add_element(last_element, name, HimppAencChan(HIMPP_AUDIO_ELEMENT(last_element), encoding, index))) {
+				if ((pit = params.find("bitrate")) != params.end() ||
+				    (pit = params.find("br")) != params.end()) {
+					uint32_t bitrate = std::stoul(pit->second);
+					HIMPP_AENC_CHAN(last_element)->setBitrate(bitrate);
+				}
+			}
 		}
 
 		std::unordered_map<std::string, std::string>::iterator pit;

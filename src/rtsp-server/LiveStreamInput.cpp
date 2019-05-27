@@ -685,6 +685,9 @@ RTPSink* LiveAudioServerMediaSubsession
 		case G726:
 			mimeType = "G726-40";
 			break;
+		case AAC: //Irrelevant because it's handled above, but here to clear the warning
+		  mimeType = "AAC";
+			break;
 		default:
 			break;
 		}
