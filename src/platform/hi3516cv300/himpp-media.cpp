@@ -129,7 +129,7 @@ HimppMedia::HimppMedia(IpcamRuntime *runtime, PlatformArguments& args)
 		}
 	}
 
-	_sysctl.addVideoBuffer(196 * 4, 2);
+	_sysctl.addVideoBuffer(1920*1080 * 3/2, 2);
 	_sysctl.enable();
 
 	// enable elements with MEFLAGS_INITIAL_ENABLED flag
