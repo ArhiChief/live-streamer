@@ -97,6 +97,11 @@ RTSPStream IpcamRuntime::addRTSPStream
 					::createNew(_rtsp_server->envir(), 
 					            H264_VIDEO_STREAM_SOURCE(video));
 				break;
+			case H265:
+				vsmss = LiveH265VideoServerMediaSubsession
+					::createNew(_rtsp_server->envir(), 
+					            H265_VIDEO_STREAM_SOURCE(video));
+				break;				
 			case JPEG:
 			case MJPEG:
 				vsmss = LiveJPEGVideoServerMediaSubsession

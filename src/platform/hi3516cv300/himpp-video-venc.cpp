@@ -35,6 +35,7 @@ HimppVencChan::HimppVencChan
     _chnid(chnid),
     _encoding(encoding),
     _h264profile(HIGH),
+		_h265profile(HEVC_MAIN),
     _rcmode(VBR),
     _resolution(source->resolution()),
     _framerate(source->framerate()),
@@ -137,12 +138,17 @@ void HimppVencChan::watch_handler(ev::io &w, int revents)
 	StreamBuffer *sbuf = NULL;
 	JPEGStreamBuffer jpegbuffer;
 	H264StreamBuffer h264buffer;
+	H265StreamBuffer h265buffer;
 
 	switch (encoding()) {
 	case H264:
 		h264buffer.keyframe = (stStream.stH264Info.enRefType == BASE_IDRSLICE);
 		sbuf = &h264buffer;
 		break;
+	case H265:
+		h265buffer.keyframe = (stStream.stH265Info.enRefType == BASE_IDRSLICE);
+		sbuf = &h265buffer;
+		break;		
 	case JPEG:
 	case MJPEG:
 		jpegbuffer.qfactor = stStream.stJpegInfo.u32Qfactor;
@@ -199,6 +205,29 @@ H264Profile HimppVencChan::getH264Profile()
 	return _h264profile;
 }
 
+void HimppVencChan::setH265Profile(H265Profile profile)
+{
+	if (is_enabled()) {
+		H265Profile oldval = _h265profile;
+		doDisableElement();
+		try {
+			_h265profile = profile;
+			doEnableElement();
+		} catch (IpcamError& e) {
+			_h265profile = oldval;
+			doEnableElement();
+			throw e;
+		}
+	}
+	_h265profile = profile;
+}
+
+H265Profile HimppVencChan::getH265Profile()
+{
+	return _h265profile;
+}
+
+
 void HimppVencChan::setRcMode(RateCtrlMode mode)
 {
 	if (is_enabled()) {
@@ -232,9 +261,15 @@ void HimppVencChan::setBitrate(uint32_t value)
 		}
 
 		switch (_rcmode) {
-		case CBR: attr.stRcAttr.stAttrH264Cbr.u32BitRate = value; break;
-		case VBR: attr.stRcAttr.stAttrH264AVbr.u32MaxBitRate = value; break;
-		default: throw IpcamError("Cannot change Bitrate in current rc mode"); break;
+			case CBR: 
+				attr.stRcAttr.stAttrH264Cbr.u32BitRate = value; 
+				attr.stRcAttr.stAttrH265Cbr.u32BitRate = value; 
+				break;
+			case VBR: 
+				attr.stRcAttr.stAttrH264AVbr.u32MaxBitRate = value;
+				attr.stRcAttr.stAttrH265AVbr.u32MaxBitRate = value;
+				break;
+			default: throw IpcamError("Cannot change Bitrate in current rc mode"); break;
 		}
 
 		if ((retval = HI_MPI_VENC_SetChnAttr(_chnid, &attr)) != HI_SUCCESS) {
@@ -260,9 +295,18 @@ void HimppVencChan::setGovLength(uint32_t value)
 		}
 
 		switch (_rcmode) {
-		case CBR: attr.stRcAttr.stAttrH264Cbr.u32Gop = value; break;
-		case VBR: attr.stRcAttr.stAttrH264AVbr.u32Gop = value; break;
-		case FIXQP: attr.stRcAttr.stAttrH264FixQp.u32Gop = value; break;
+		case CBR: 
+			attr.stRcAttr.stAttrH264Cbr.u32Gop = value; 
+			attr.stRcAttr.stAttrH265Cbr.u32Gop = value; 
+			break;
+		case VBR: 
+			attr.stRcAttr.stAttrH264AVbr.u32Gop = value;
+			attr.stRcAttr.stAttrH265AVbr.u32Gop = value;
+			break;
+		case FIXQP: 
+			attr.stRcAttr.stAttrH264FixQp.u32Gop = value;
+			attr.stRcAttr.stAttrH265FixQp.u32Gop = value;
+			break;
 		default: throw IpcamError("Cannot change GovLength in current rc mode"); break;
 		}
 
@@ -292,10 +336,14 @@ void HimppVencChan::setMinQP(uint32_t value)
 		case CBR:
 			param.stParamH264Cbr.u32MinQp = value;
 			param.stParamH264Cbr.u32MinIQp = value;
+			param.stParamH265Cbr.u32MinQp = value;
+			param.stParamH265Cbr.u32MinIQp = value;
 			break;
 		case VBR:
 			param.stParamH264AVbr.u32MinQp = value;
 			param.stParamH264AVbr.u32MinIQp = MIN2(value, param.stParamH264AVbr.u32MaxStillQP);
+			param.stParamH265AVbr.u32MinQp = value;
+			param.stParamH265AVbr.u32MinIQp = MIN2(value, param.stParamH265AVbr.u32MaxStillQP);
 			break;
 		default:
 			throw IpcamError("Cannot change MinQP in current rc mode"); break;

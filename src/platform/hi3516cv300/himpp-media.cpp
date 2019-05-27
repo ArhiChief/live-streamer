@@ -327,6 +327,8 @@ MediaElement* HimppMedia::buildElementPipe(const std::string& description)
 			if (pit != params.end()) {
 				if (pit->second == "H264") {
 					encoding = H264;
+				} else if (pit->second == "H265") {
+					encoding = H265;					
 				} else if (pit->second == "JPEG") {
 					encoding = JPEG;
 				} else if (pit->second == "MJPEG") {
