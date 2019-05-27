@@ -141,22 +141,22 @@ uint32_t H264VideoEncoder::getMaxQP()
 	throw IpcamError(property_not_implemented);
 }
 
-void H264VideoEncoder::setFrameRefMode(FrameRefMode264 value)
+void H264VideoEncoder::setFrameRefMode(FrameRefMode value)
 {
 	throw IpcamError(property_not_implemented);
 }
 
-H264VideoEncoder::FrameRefMode264 H264VideoEncoder::getFrameRefMode()
+FrameRefMode H264VideoEncoder::getFrameRefMode()
 {
 	throw IpcamError(property_not_implemented);
 }
 
-void H264VideoEncoder::setIntraRefresh(IntraRefreshParam264 value)
+void H264VideoEncoder::setIntraRefresh(IntraRefreshParam value)
 {
 	throw IpcamError(property_not_implemented);
 }
 
-H264VideoEncoder::IntraRefreshParam264 H264VideoEncoder::getIntraRefresh()
+IntraRefreshParam H264VideoEncoder::getIntraRefresh()
 {
 	throw IpcamError(property_not_implemented);
 }
@@ -214,22 +214,22 @@ uint32_t H265VideoEncoder::getMaxQP()
 	throw IpcamError(property_not_implemented);
 }
 
-void H265VideoEncoder::setFrameRefMode(FrameRefMode265 value)
+void H265VideoEncoder::setFrameRefMode(FrameRefMode value)
 {
 	throw IpcamError(property_not_implemented);
 }
 
-H265VideoEncoder::FrameRefMode265 H265VideoEncoder::getFrameRefMode()
+FrameRefMode H265VideoEncoder::getFrameRefMode()
 {
 	throw IpcamError(property_not_implemented);
 }
 
-void H265VideoEncoder::setIntraRefresh(IntraRefreshParam265 value)
+void H265VideoEncoder::setIntraRefresh(IntraRefreshParam value)
 {
 	throw IpcamError(property_not_implemented);
 }
 
-H265VideoEncoder::IntraRefreshParam265 H265VideoEncoder::getIntraRefresh()
+IntraRefreshParam H265VideoEncoder::getIntraRefresh()
 {
 	throw IpcamError(property_not_implemented);
 }

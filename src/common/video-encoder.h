@@ -65,7 +65,7 @@ protected:
 	VideoEncoder();
 };
 
-public struct FrameRefMode {
+struct FrameRefMode {
 	uint32_t				Base;
 	uint32_t				Enhanced;
 	bool					EnablePred;
@@ -73,7 +73,7 @@ public struct FrameRefMode {
 		: Base(base), Enhanced(enhanced), EnablePred(enablepred) {}
 };
 
-public struct IntraRefreshParam {
+struct IntraRefreshParam {
 	bool					EnableRefresh;
 	bool					EnableISlice;
 	uint32_t				RefreshLineNum;
@@ -84,7 +84,6 @@ public struct IntraRefreshParam {
 
 class H264VideoEncoder : public virtual VideoEncoder
 {
-public:
 public:
 	virtual ~H264VideoEncoder();
 

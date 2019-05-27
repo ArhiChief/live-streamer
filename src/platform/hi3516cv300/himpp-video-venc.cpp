@@ -43,10 +43,8 @@ HimppVencChan::HimppVencChan
     _gop(_framerate * 2),
     _min_qp(16),
     _max_qp(51),
-	_refmode264(1, 0, true),
-	_intrarefresh264(false, false, 11, 51),
-	_refmode265(1, 0, true),
-	_intrarefresh265(false, false, 11, 51),
+	_refmode(1, 0, true),
+	_intrarefresh(false, false, 11, 51),
 	_io(mainloop)
 {
 	_crop_cfg.bEnable = HI_FALSE;
@@ -402,7 +400,7 @@ uint32_t HimppVencChan::getMaxQP()
 	return _max_qp;
 }
 
-void HimppVencChan::setFrameRefMode(FrameRefMode264 value)
+void HimppVencChan::setFrameRefMode(FrameRefMode value)
 {
 	if (is_enabled()) {
 		VENC_PARAM_REF_S stRefParam;
@@ -422,19 +420,7 @@ void HimppVencChan::setFrameRefMode(FrameRefMode264 value)
 	_refmode = value;
 }
 
-H264VideoEncoder::FrameRefMode264 HimppVencChan::getFrameRefMode()
-{
-	if (is_enabled()) {
-		VENC_PARAM_REF_S stRefParam;
-		HI_S32 s32Ret;
-		if ((s32Ret = HI_MPI_VENC_GetRefParam(_chnid, &stRefParam)) == HI_SUCCESS) {
-			_refmode = FrameRefMode(stRefParam.u32Base, stRefParam.u32Enhance, stRefParam.bEnablePred);
-		}
-	}
-	return _refmode;
-}
-
-H265VideoEncoder::FrameRefMode265 HimppVencChan::getFrameRefMode()
+FrameRefMode HimppVencChan::getFrameRefMode()
 {
 	if (is_enabled()) {
 		VENC_PARAM_REF_S stRefParam;
@@ -467,19 +453,7 @@ void HimppVencChan::setIntraRefresh(IntraRefreshParam value)
 	_intrarefresh = value;
 }
 
-H264VideoEncoder::IntraRefreshParam HimppVencChan::getIntraRefresh()
-{
-	if (is_enabled()) {
-		VENC_PARAM_INTRA_REFRESH_S stIntraRefresh;
-		HI_S32 s32Ret;
-		if ((s32Ret = HI_MPI_VENC_GetIntraRefresh(_chnid, &stIntraRefresh)) == HI_SUCCESS) {
-			_intrarefresh = IntraRefreshParam (stIntraRefresh.bRefreshEnable, stIntraRefresh.bISliceEnable, stIntraRefresh.u32RefreshLineNum, stIntraRefresh.u32ReqIQp);
-		}
-	}
-	return _intrarefresh;
-}
-
-H265VideoEncoder::IntraRefreshParam HimppVencChan::getIntraRefresh()
+IntraRefreshParam HimppVencChan::getIntraRefresh()
 {
 	if (is_enabled()) {
 		VENC_PARAM_INTRA_REFRESH_S stIntraRefresh;

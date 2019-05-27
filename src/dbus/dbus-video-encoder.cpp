@@ -246,7 +246,7 @@ H264VideoEncoder::H264VideoEncoder
 		   const std::string &property, DBus::Variant &value)
 		{
 			Ipcam::Media::H264VideoEncoder* h264venc = H264_VIDEO_ENCODER(_video_encoder);
-			Ipcam::Media::H264VideoEncoder::FrameRefMode264 refmode = h264venc->getFrameRefMode();
+			Ipcam::Media::FrameRefMode refmode = h264venc->getFrameRefMode();
 			DBus::Struct<uint32_t, uint32_t, bool> s;
 			s._1 = refmode.Base;
 			s._2 = refmode.Enhanced;
@@ -259,7 +259,7 @@ H264VideoEncoder::H264VideoEncoder
 		{
 			Ipcam::Media::H264VideoEncoder* h264venc = H264_VIDEO_ENCODER(_video_encoder);
 			DBus::Struct<uint32_t, uint32_t, bool> s = value;
-			Ipcam::Media::H264VideoEncoder::FrameRefMode264 refmode(s._1, s._2, s._3);
+			Ipcam::Media::FrameRefMode refmode(s._1, s._2, s._3);
 			h264venc->setFrameRefMode(refmode);
 		}));
 	DEFINE_PROP(H264_INTERFACE ".IntraRefresh",
@@ -267,7 +267,7 @@ H264VideoEncoder::H264VideoEncoder
 		   const std::string &property, DBus::Variant &value)
 		{
 			Ipcam::Media::H264VideoEncoder* h264venc = H264_VIDEO_ENCODER(_video_encoder);
-			Ipcam::Media::H264VideoEncoder::IntraRefreshParam264 param = h264venc->getIntraRefresh();
+			Ipcam::Media::IntraRefreshParam param = h264venc->getIntraRefresh();
 			DBus::Struct<bool, bool, uint32_t, uint32_t> s;
 			s._1 = param.EnableRefresh;
 			s._2 = param.EnableISlice;
@@ -281,7 +281,7 @@ H264VideoEncoder::H264VideoEncoder
 		{
 			Ipcam::Media::H264VideoEncoder* h264venc = H264_VIDEO_ENCODER(_video_encoder);
 			DBus::Struct<bool, bool, uint32_t, uint32_t> s = value;
-			Ipcam::Media::H264VideoEncoder::IntraRefreshParam264 param(s._1, s._2, s._3, s._4);
+			Ipcam::Media::IntraRefreshParam param(s._1, s._2, s._3, s._4);
 			h264venc->setIntraRefresh(param);
 		}));
 }
@@ -351,7 +351,7 @@ H265VideoEncoder::H265VideoEncoder
 		   const std::string &property, DBus::Variant &value)
 		{
 			Ipcam::Media::H265VideoEncoder* h265venc = H265_VIDEO_ENCODER(_video_encoder);
-			Ipcam::Media::H265VideoEncoder::FrameRefMode265 refmode = h265venc->getFrameRefMode();
+			Ipcam::Media::FrameRefMode refmode = h265venc->getFrameRefMode();
 			DBus::Struct<uint32_t, uint32_t, bool> s;
 			s._1 = refmode.Base;
 			s._2 = refmode.Enhanced;
@@ -364,7 +364,7 @@ H265VideoEncoder::H265VideoEncoder
 		{
 			Ipcam::Media::H265VideoEncoder* h265venc = H265_VIDEO_ENCODER(_video_encoder);
 			DBus::Struct<uint32_t, uint32_t, bool> s = value;
-			Ipcam::Media::H265VideoEncoder::FrameRefMode265 refmode(s._1, s._2, s._3);
+			Ipcam::Media::FrameRefMode refmode(s._1, s._2, s._3);
 			h265venc->setFrameRefMode(refmode);
 		}));
 	DEFINE_PROP(H265_INTERFACE ".IntraRefresh",
@@ -372,7 +372,7 @@ H265VideoEncoder::H265VideoEncoder
 		   const std::string &property, DBus::Variant &value)
 		{
 			Ipcam::Media::H265VideoEncoder* h265venc = H265_VIDEO_ENCODER(_video_encoder);
-			Ipcam::Media::H265VideoEncoder::IntraRefreshParam265 param = h265venc->getIntraRefresh();
+			Ipcam::Media::IntraRefreshParam param = h265venc->getIntraRefresh();
 			DBus::Struct<bool, bool, uint32_t, uint32_t> s;
 			s._1 = param.EnableRefresh;
 			s._2 = param.EnableISlice;
@@ -386,7 +386,7 @@ H265VideoEncoder::H265VideoEncoder
 		{
 			Ipcam::Media::H265VideoEncoder* h265venc = H265_VIDEO_ENCODER(_video_encoder);
 			DBus::Struct<bool, bool, uint32_t, uint32_t> s = value;
-			Ipcam::Media::H265VideoEncoder::IntraRefreshParam265 param(s._1, s._2, s._3, s._4);
+			Ipcam::Media::IntraRefreshParam param(s._1, s._2, s._3, s._4);
 			h265venc->setIntraRefresh(param);
 		}));
 }
