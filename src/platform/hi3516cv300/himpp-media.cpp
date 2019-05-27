@@ -371,6 +371,7 @@ MediaElement* HimppMedia::buildElementPipe(const std::string& description)
 		}
 		else if (name.compare(0, 6, "acodec") == 0) {
 			if(add_element(last_element, name, HimppAudioCodec())){
+				std::unordered_map<std::string, std::string>::iterator pit;
 				if ((pit = params.find("samplerate")) != params.end()) {
 					uint32_t sampleRate = std::stoi(pit->second);
 					HIMPP_AUDIO_CODEC(last_element)->setSampleRate(sampleRate);
