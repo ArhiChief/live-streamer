@@ -370,7 +370,12 @@ MediaElement* HimppMedia::buildElementPipe(const std::string& description)
 			add_element(last_element, name, HimppIrCut(HIMPP_VIDEO_ELEMENT(last_element), params));
 		}
 		else if (name.compare(0, 6, "acodec") == 0) {
-			add_element(last_element, name, HimppAudioCodec());
+			if(add_element(last_element, name, HimppAudioCodec())){
+				if ((pit = params.find("samplerate")) != params.end()) {
+					uint32_t sampleRate = std::stoi(pit->second);
+					HIMPP_AUDIO_CODEC(last_element)->setSampleRate(sampleRate);
+				}
+			}
 		}
 		else if (name.compare(0, 5, "aidev") == 0) {
 			if (!last_element && (_elements.find(name) == _elements.end())) break;
