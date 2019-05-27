@@ -375,10 +375,14 @@ void HimppVencChan::setMaxQP(uint32_t value)
 		case CBR:
 			param.stParamH264Cbr.u32MaxQp = value;
 			param.stParamH264Cbr.u32MaxIQp = value;
+			param.stParamH265Cbr.u32MaxQp = value;
+			param.stParamH265Cbr.u32MaxIQp = value;
 			break;
 		case VBR:
 			param.stParamH264AVbr.u32MaxQp = value;
 			param.stParamH264AVbr.u32MaxIQp = value;
+			param.stParamH265AVbr.u32MaxQp = value;
+			param.stParamH265Vbr.u32MaxIQp = value;			
 			break;
 		default:
 			throw IpcamError("Cannot change MaxQP in current rc mode"); break;
@@ -428,6 +432,18 @@ H264VideoEncoder::FrameRefMode HimppVencChan::getFrameRefMode()
 	return _refmode;
 }
 
+H265VideoEncoder::FrameRefMode HimppVencChan::getFrameRefMode()
+{
+	if (is_enabled()) {
+		VENC_PARAM_REF_S stRefParam;
+		HI_S32 s32Ret;
+		if ((s32Ret = HI_MPI_VENC_GetRefParam(_chnid, &stRefParam)) == HI_SUCCESS) {
+			_refmode = FrameRefMode(stRefParam.u32Base, stRefParam.u32Enhance, stRefParam.bEnablePred);
+		}
+	}
+	return _refmode;
+}
+
 void HimppVencChan::setIntraRefresh(IntraRefreshParam value)
 {
 	if (is_enabled()) {
@@ -450,6 +466,18 @@ void HimppVencChan::setIntraRefresh(IntraRefreshParam value)
 }
 
 H264VideoEncoder::IntraRefreshParam HimppVencChan::getIntraRefresh()
+{
+	if (is_enabled()) {
+		VENC_PARAM_INTRA_REFRESH_S stIntraRefresh;
+		HI_S32 s32Ret;
+		if ((s32Ret = HI_MPI_VENC_GetIntraRefresh(_chnid, &stIntraRefresh)) == HI_SUCCESS) {
+			_intrarefresh = IntraRefreshParam (stIntraRefresh.bRefreshEnable, stIntraRefresh.bISliceEnable, stIntraRefresh.u32RefreshLineNum, stIntraRefresh.u32ReqIQp);
+		}
+	}
+	return _intrarefresh;
+}
+
+H265VideoEncoder::IntraRefreshParam HimppVencChan::getIntraRefresh()
 {
 	if (is_enabled()) {
 		VENC_PARAM_INTRA_REFRESH_S stIntraRefresh;
@@ -638,6 +666,38 @@ void HimppVencChan::prepareRcAttr(VENC_RC_ATTR_S &attr)
 			throw IpcamError("Unsupported RC mode");
 		}
 		break;
+	case H265:
+		switch (_rcmode) {
+		case CBR:
+			attr.enRcMode = VENC_RC_MODE_H265CBR;
+			attr.stAttrH265Cbr.u32Gop = _gop;
+			attr.stAttrH265Cbr.u32StatTime = stattime;
+			attr.stAttrH265Cbr.u32SrcFrmRate = ifr;
+			attr.stAttrH265Cbr.fr32DstFrmRate = MIN2(_framerate, ifr);
+			attr.stAttrH265Cbr.u32BitRate = _bitrate;
+			attr.stAttrH265Cbr.u32FluctuateLevel = 0;
+			break;
+		case VBR:
+			attr.enRcMode = VENC_RC_MODE_H265AVBR;
+			attr.stAttrH265AVbr.u32Gop = _gop;
+			attr.stAttrH265AVbr.u32StatTime = stattime;
+			attr.stAttrH265AVbr.u32SrcFrmRate = ifr;
+			attr.stAttrH265AVbr.fr32DstFrmRate = MIN2(_framerate, ifr);
+			attr.stAttrH265AVbr.u32MaxBitRate = _bitrate;
+			break;
+		case FIXQP:
+			attr.enRcMode = VENC_RC_MODE_H265FIXQP;
+			attr.stAttrH265FixQp.u32Gop = _gop;
+			attr.stAttrH265FixQp.u32SrcFrmRate = ifr;
+			attr.stAttrH265FixQp.fr32DstFrmRate = MIN2(_framerate, ifr);
+			attr.stAttrH265FixQp.u32IQp = 20;
+			attr.stAttrH265FixQp.u32PQp = 23;
+			break;
+		default:
+			HIMPP_PRINT("Unsupported RC mode[%d]\n", _rcmode);
+			throw IpcamError("Unsupported RC mode");
+		}
+		break;		
 	case MJPEG:
 		switch (_rcmode) {
 		case CBR:
@@ -693,6 +753,16 @@ void HimppVencChan::prepareChnAttr(VENC_CHN_ATTR_S &attr)
 		attr.stVeAttr.stAttrH264e.u32Profile = _h264profile;
 		attr.stVeAttr.stAttrH264e.bByFrame = HI_FALSE;
 		break;
+	case H265:
+		attr.stVeAttr.enType = PT_H265;
+		attr.stVeAttr.stAttrH265e.u32MaxPicWidth = ROUNDUP16(_resolution.width());
+		attr.stVeAttr.stAttrH265e.u32MaxPicHeight = ROUNDUP16(_resolution.height());
+		attr.stVeAttr.stAttrH265e.u32BufSize = ROUNDUP64(_resolution.width()) * ROUNDUP64(_resolution.height());
+		attr.stVeAttr.stAttrH265e.u32PicWidth = _resolution.width();
+		attr.stVeAttr.stAttrH265e.u32PicHeight = _resolution.height();
+		attr.stVeAttr.stAttrH265e.u32Profile = _h265profile;
+		attr.stVeAttr.stAttrH265e.bByFrame = HI_FALSE;
+		break;		
 	case MJPEG:
 		attr.stVeAttr.enType = PT_MJPEG;
 		attr.stVeAttr.stAttrMjpege.u32MaxPicWidth = ROUNDUP16(_resolution.width());
@@ -795,6 +865,74 @@ void HimppVencChan::doEnableElement()
 				param.stParamH264AVbr.u32MinIQp = MIN2(_min_qp, param.stParamH264AVbr.u32MaxStillQP);
 				param.stParamH264AVbr.u32MaxQp = _max_qp;
 				param.stParamH264AVbr.u32MaxIQp = _max_qp;
+				break;
+			default:
+				throw IpcamError("Cannot change MinQP in current rc mode"); break;
+			}
+			if ((s32Ret = HI_MPI_VENC_SetRcParam(_chnid, &param)) != HI_SUCCESS) {
+				HIMPP_PRINT("HI_MPI_VENC_SetRcParam(%d) failed [%#x]\n",
+				            _chnid, s32Ret);
+			}
+		} else {
+			HIMPP_PRINT("HI_MPI_VENC_GetRcParam(%d) failed [%#x]\n",
+			            _chnid, s32Ret);
+		}
+	}
+	if (_encoding == H265) {
+		VENC_PARAM_H265_VUI_S stVui;
+		if ((s32Ret = HI_MPI_VENC_GetH265Vui(_chnid, &stVui)) == HI_SUCCESS) {
+			stVui.stVuiTimeInfo.timing_info_present_flag = 1;
+			stVui.stVuiTimeInfo.num_units_in_tick = 1;
+			stVui.stVuiTimeInfo.time_scale = _framerate * 2;
+			if ((s32Ret = HI_MPI_VENC_SetH265Vui(_chnid, &stVui)) != HI_SUCCESS) {
+				HIMPP_PRINT("HI_MPI_VENC_SetH265Vui(%d) failed [%#x]\n",
+							_chnid, s32Ret);
+			}
+		}
+
+		VENC_PARAM_REF_S stRefParam;
+		if ((s32Ret = HI_MPI_VENC_GetRefParam(_chnid, &stRefParam)) == HI_SUCCESS) {
+			stRefParam.u32Base = _refmode.Base;
+			stRefParam.u32Enhance = _refmode.Enhanced;
+			stRefParam.bEnablePred = (HI_BOOL)_refmode.EnablePred;
+			if ((s32Ret = HI_MPI_VENC_SetRefParam(_chnid, &stRefParam)) != HI_SUCCESS) {
+				HIMPP_PRINT("HI_MPI_VENC_SetRefParam(%d) failed [%#x]\n",
+				            _chnid, s32Ret);
+			}
+		} else {
+			HIMPP_PRINT("HI_MPI_VENC_GetRefParam(%d) failed [%#x]\n",
+			            _chnid, s32Ret);
+		}
+
+		VENC_PARAM_INTRA_REFRESH_S stIntraRefresh;
+		if ((s32Ret = HI_MPI_VENC_GetIntraRefresh(_chnid, &stIntraRefresh)) == HI_SUCCESS) {
+			stIntraRefresh.bRefreshEnable = (HI_BOOL)_intrarefresh.EnableRefresh;
+			stIntraRefresh.bISliceEnable = (HI_BOOL)_intrarefresh.EnableISlice;
+			stIntraRefresh.u32RefreshLineNum = _intrarefresh.RefreshLineNum;
+			stIntraRefresh.u32ReqIQp = _intrarefresh.ReqIQp;
+			if ((s32Ret = HI_MPI_VENC_SetIntraRefresh(_chnid, &stIntraRefresh)) != HI_SUCCESS) {
+				HIMPP_PRINT("HI_MPI_VENC_SetIntraRefresh(%d) failed [%#x]\n",
+				            _chnid, s32Ret);
+			}
+		} else {
+			HIMPP_PRINT("HI_MPI_VENC_GetIntraRefresh(%d) failed [%#x]\n",
+			            _chnid, s32Ret);
+		}
+
+		VENC_RC_PARAM_S param;
+		if ((s32Ret = HI_MPI_VENC_GetRcParam(_chnid, &param)) == HI_SUCCESS) {
+			switch (_rcmode) {
+			case CBR:
+				param.stParamH265Cbr.u32MinQp = _min_qp;
+				param.stParamH265Cbr.u32MinIQp = _min_qp;
+				param.stParamH265Cbr.u32MaxQp = _max_qp;
+				param.stParamH265Cbr.u32MaxIQp = _max_qp;
+				break;
+			case VBR:
+				param.stParamH265AVbr.u32MinQp = _min_qp;
+				param.stParamH265AVbr.u32MinIQp = MIN2(_min_qp, param.stParamH265AVbr.u32MaxStillQP);
+				param.stParamH265AVbr.u32MaxQp = _max_qp;
+				param.stParamH265AVbr.u32MaxIQp = _max_qp;
 				break;
 			default:
 				throw IpcamError("Cannot change MinQP in current rc mode"); break;

@@ -106,6 +106,7 @@ private:
 	VENC_CHN					_chnid;
 	VideoEncodingType			_encoding;
 	H264Profile					_h264profile;
+	H265Profile                 _h265profile;
 	RateCtrlMode				_rcmode;
 	Resolution					_resolution;
 	uint32_t					_framerate;
