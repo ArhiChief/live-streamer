@@ -384,7 +384,7 @@ void HimppVencChan::setMaxQP(uint32_t value)
 			param.stParamH264AVbr.u32MaxQp = value;
 			param.stParamH264AVbr.u32MaxIQp = value;
 			param.stParamH265AVbr.u32MaxQp = value;
-			param.stParamH265Vbr.u32MaxIQp = value;			
+			param.stParamH265Vbr.u32MaxIprop = value;			
 			break;
 		default:
 			throw IpcamError("Cannot change MaxQP in current rc mode"); break;
@@ -402,7 +402,7 @@ uint32_t HimppVencChan::getMaxQP()
 	return _max_qp;
 }
 
-void HimppVencChan::setFrameRefMode(FrameRefMode value)
+void HimppVencChan::setFrameRefMode(FrameRefMode264 value)
 {
 	if (is_enabled()) {
 		VENC_PARAM_REF_S stRefParam;
@@ -422,7 +422,7 @@ void HimppVencChan::setFrameRefMode(FrameRefMode value)
 	_refmode = value;
 }
 
-H264VideoEncoder::FrameRefMode HimppVencChan::getFrameRefMode()
+H264VideoEncoder::FrameRefMode264 HimppVencChan::getFrameRefMode()
 {
 	if (is_enabled()) {
 		VENC_PARAM_REF_S stRefParam;
@@ -434,7 +434,7 @@ H264VideoEncoder::FrameRefMode HimppVencChan::getFrameRefMode()
 	return _refmode;
 }
 
-H265VideoEncoder::FrameRefMode HimppVencChan::getFrameRefMode()
+H265VideoEncoder::FrameRefMode265 HimppVencChan::getFrameRefMode()
 {
 	if (is_enabled()) {
 		VENC_PARAM_REF_S stRefParam;
