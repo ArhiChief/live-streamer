@@ -43,8 +43,10 @@ HimppVencChan::HimppVencChan
     _gop(_framerate * 2),
     _min_qp(16),
     _max_qp(51),
-	_refmode(1, 0, true),
-	_intrarefresh(false, false, 11, 51),
+	_refmode264(1, 0, true),
+	_intrarefresh264(false, false, 11, 51),
+	_refmode265(1, 0, true),
+	_intrarefresh265(false, false, 11, 51),
 	_io(mainloop)
 {
 	_crop_cfg.bEnable = HI_FALSE;

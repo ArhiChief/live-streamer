@@ -75,7 +75,7 @@ public:
 	// implentation of H264VideoEncoder
 	void				setH264Profile(H264Profile value);
 	H264Profile			getH264Profile();
-	void				setH265Profile(H264Profile value);
+	void				setH265Profile(H265Profile value);
 	H265Profile			getH265Profile();	
 	void				setGovLength(uint32_t value);
 	uint32_t			getGovLength();
@@ -83,10 +83,14 @@ public:
 	uint32_t			getMinQP();
 	void				setMaxQP(uint32_t value);
 	uint32_t			getMaxQP();
-	void				setFrameRefMode(FrameRefMode value);
-	FrameRefMode		getFrameRefMode();
-	void				setIntraRefresh(IntraRefreshParam value);
-	IntraRefreshParam	getIntraRefresh();
+	void				setFrameRefMode264(FrameRefMode264 value);
+	FrameRefMode264		getFrameRefMode264();
+	void				setFrameRefMode265(FrameRefMode265 value);
+	FrameRefMode265		getFrameRefMode265();
+	void				setIntraRefresh264(IntraRefreshParam264 value);
+	IntraRefreshParam264	getIntraRefresh264();
+	void				setIntraRefresh265(IntraRefreshParam265 value);
+	IntraRefreshParam265	getIntraRefresh265();
 
 	void				requestIDR();
 
@@ -115,8 +119,10 @@ private:
 	uint32_t					_min_qp;
 	uint32_t					_max_qp;
 	VENC_CROP_CFG_S				_crop_cfg;
-	FrameRefMode				_refmode;
-	IntraRefreshParam			_intrarefresh;
+	FrameRefMode264				_refmode264;
+	IntraRefreshParam264		_intrarefresh264;
+	FrameRefMode265				_refmode265;
+	IntraRefreshParam265		_intrarefresh265;
 
 	ev::io						_io;
 
