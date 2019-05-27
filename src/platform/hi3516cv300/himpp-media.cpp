@@ -407,6 +407,8 @@ MediaElement* HimppMedia::buildElementPipe(const std::string& description)
 					encoding = G711U;
 				} else if (pit->second == "G726") {
 					encoding = G726;
+				} else if (pit->second == "AAC") {
+					encoding = AAC;
 				} else {
 					std::cerr << name << ": " << "invalid encoding \"" << pit->second << "\"." << std::endl;
 					break;
