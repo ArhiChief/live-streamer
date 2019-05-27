@@ -395,23 +395,12 @@ LiveH265VideoServerMediaSubsession::~LiveH265VideoServerMediaSubsession()
 	delete[] fAuxSDPLine;
 }
 
-static void afterPlayingDummy(void* clientData) {
-	LiveH265VideoServerMediaSubsession* subsess = (LiveH265VideoServerMediaSubsession*)clientData;
-	subsess->afterPlayingDummy1();
-}
-
 void LiveH265VideoServerMediaSubsession::afterPlayingDummy1()
 {
 	// Unschedule any pending 'checking' task:
 	envir().taskScheduler().unscheduleDelayedTask(nextTask());
 	// Signal the event loop that we're done:
 	setDoneFlag();
-}
-
-static void checkForAuxSDPLine(void* clientData)
-{
-	LiveH265VideoServerMediaSubsession* subsess = (LiveH265VideoServerMediaSubsession*)clientData;
-	subsess->checkForAuxSDPLine1();
 }
 
 void LiveH265VideoServerMediaSubsession::checkForAuxSDPLine1()
