@@ -72,7 +72,7 @@ public:
 		uint32_t				Base;
 		uint32_t				Enhanced;
 		bool					EnablePred;
-		FrameRefMode(uint32_t base, uint32_t enhanced, bool enablepred)
+		FrameRefMode264(uint32_t base, uint32_t enhanced, bool enablepred)
 			: Base(base), Enhanced(enhanced), EnablePred(enablepred) {}
 	};
 	struct IntraRefreshParam264 {
@@ -80,7 +80,7 @@ public:
 		bool					EnableISlice;
 		uint32_t				RefreshLineNum;
 		uint32_t				ReqIQp;
-		IntraRefreshParam(bool refresh_en, bool islice_en, uint32_t linenum, uint32_t reqiqp)
+		IntraRefreshParam264(bool refresh_en, bool islice_en, uint32_t linenum, uint32_t reqiqp)
 			: EnableRefresh(refresh_en), EnableISlice(islice_en), RefreshLineNum(linenum), ReqIQp(reqiqp) {}
 	};
 public:
@@ -111,7 +111,7 @@ public:
 		uint32_t				Base;
 		uint32_t				Enhanced;
 		bool					EnablePred;
-		FrameRefMode(uint32_t base, uint32_t enhanced, bool enablepred)
+		FrameRefMode265(uint32_t base, uint32_t enhanced, bool enablepred)
 			: Base(base), Enhanced(enhanced), EnablePred(enablepred) {}
 	};
 	struct IntraRefreshParam265 {
@@ -119,7 +119,7 @@ public:
 		bool					EnableISlice;
 		uint32_t				RefreshLineNum;
 		uint32_t				ReqIQp;
-		IntraRefreshParam(bool refresh_en, bool islice_en, uint32_t linenum, uint32_t reqiqp)
+		IntraRefreshParam265(bool refresh_en, bool islice_en, uint32_t linenum, uint32_t reqiqp)
 			: EnableRefresh(refresh_en), EnableISlice(islice_en), RefreshLineNum(linenum), ReqIQp(reqiqp) {}
 	};
 public:
