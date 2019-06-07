@@ -344,18 +344,19 @@ void HimppIrCut::sensor_timer_handler(ev::timer& w, int revents)
 	int retval, inval;
 
 	if ((retval = _sensor_dev.getValue(inval)) > 0) {
-		if (_status == IRCUT_ON && inval > _threshold + (int)_hysteresis){
+		//The inval==0 and inval==1 catch situations with digital sensor inputs
+		//analogs aren't likely to land on 0 or 1, so it's mostly safe
+		//A value of 1 from a digital sensor means the IR leds are on so we need to cut
+
+		if (_status == IRCUT_ON && (inval > _threshold + (int)_hysteresis 
+		|| inval ==0)){
 			if (++_debounce_count >= 3) {
 				ircut_off();
 				_debounce_count = 0;
 			}
 		}
-		else if ((_status == IRCUT_OFF && inval < _threshold - (int)_hysteresis)
-		|| inval ==1) {
-			//The inval==1 catches situations with digital sensor inputs
-			//analogs aren't likely to land on 1, so it's mostly safe
-			//A value of 1 from a digital sensor means the IR leds are on so we need to cut
-
+		else if (_status == IRCUT_OFF && (inval < _threshold - (int)_hysteresis
+		|| inval ==1)) {
 			if (++_debounce_count >= 3) {
 				ircut_on();
 				_debounce_count = 0;
