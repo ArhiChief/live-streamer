@@ -245,7 +245,6 @@ HimppIrCut::HimppIrCut(HimppVideoElement* source, std::unordered_map<std::string
 	if(_sensor_dev.is_open() && _ircutn_dev.is_open() && _ircutp_dev.is_open())
 	{
 		enable();
-		setMode(IRCUT_AUTO);
 	}
 }
 
