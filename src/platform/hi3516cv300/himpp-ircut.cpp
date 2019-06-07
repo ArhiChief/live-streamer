@@ -240,6 +240,12 @@ HimppIrCut::HimppIrCut(HimppVideoElement* source, std::unordered_map<std::string
 			fprintf(stderr, "Open IRLED-BRIGHT device '%s' failed\n", value.c_str());
 		}
 	}
+
+	//If we have at least a sensor and a cutp/cutn, enable auto mode
+	if(_sensor_dev.is_open() && _ircutn_dev.is_open() && _ircutp_dev.is_open())
+	{
+		setMode(IRCUT_AUTO);
+	}
 }
 
 HimppIrCut::~HimppIrCut()
