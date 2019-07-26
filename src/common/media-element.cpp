@@ -109,7 +109,6 @@ uint32_t VideoElement::framerate()
 		throw IpcamError("Not implemented");
 
 	return upstream->framerate();
-
 }
 
 
