@@ -21,17 +21,6 @@
 
 #include "media-element.h"
 
-#if 0
-#ifdef HAVE_HI3516CV300_SUPPORT
-#define USING_HIMPP_BADVIDEO 1
-#include "platform/hi3516cv300/himpp-base.h"
-#endif
-#ifdef HAVE_HI3518V200_SUPPORT
-#define USING_HIMPP_BADVIDEO 1
-#include "platform/hi3618v200/himpp-base.h"
-#endif
-#endif
-
 namespace Ipcam {
 namespace Media {
 
@@ -119,19 +108,8 @@ uint32_t VideoElement::framerate()
 	if (upstream == NULL)
 		throw IpcamError("Not implemented");
 
-#ifdef USING_HIMPP_BADVIDEO
-	// nasty hack to see if we're using a himpp element that erroneously
-	// 'doubles' the codec framerate
-	try {
-		himpp_element = HIMPP_VIDEO_ELEMENT(upstream);
-		return upstream->framerate() / 2;
-	}
-	catch (std::bad_cast &c) {
-		return upstream->framerate();
-	}
-#else
 	return upstream->framerate();
-#endif
+
 }
 
 
