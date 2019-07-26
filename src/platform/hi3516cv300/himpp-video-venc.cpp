@@ -40,7 +40,8 @@ HimppVencChan::HimppVencChan
     _resolution(source->resolution()),
     _framerate(source->framerate()),
     _bitrate(2048),
-    _gop(_framerate * 2),
+    //_gop(_framerate * 2),
+    _gop(_framerate),
     _min_qp(16),
     _max_qp(51),
 	_refmode(1, 0, true),
@@ -791,7 +792,8 @@ void HimppVencChan::doEnableElement()
 		if ((s32Ret = HI_MPI_VENC_GetH264Vui(_chnid, &stVui)) == HI_SUCCESS) {
 			stVui.stVuiTimeInfo.timing_info_present_flag = 1;
 			stVui.stVuiTimeInfo.num_units_in_tick = 1;
-			stVui.stVuiTimeInfo.time_scale = _framerate * 2;
+			//stVui.stVuiTimeInfo.time_scale = _framerate * 2;
+			stVui.stVuiTimeInfo.time_scale = _framerate;
 			if ((s32Ret = HI_MPI_VENC_SetH264Vui(_chnid, &stVui)) != HI_SUCCESS) {
 				HIMPP_PRINT("HI_MPI_VENC_SetH264Vui(%d) failed [%#x]\n",
 							_chnid, s32Ret);
@@ -859,7 +861,8 @@ void HimppVencChan::doEnableElement()
 		if ((s32Ret = HI_MPI_VENC_GetH265Vui(_chnid, &stVui)) == HI_SUCCESS) {
 			stVui.stVuiTimeInfo.timing_info_present_flag = 1;
 			stVui.stVuiTimeInfo.num_units_in_tick = 1;
-			stVui.stVuiTimeInfo.time_scale = _framerate * 2;
+			//stVui.stVuiTimeInfo.time_scale = _framerate * 2;
+			stVui.stVuiTimeInfo.time_scale = _framerate;
 			if ((s32Ret = HI_MPI_VENC_SetH265Vui(_chnid, &stVui)) != HI_SUCCESS) {
 				HIMPP_PRINT("HI_MPI_VENC_SetH265Vui(%d) failed [%#x]\n",
 							_chnid, s32Ret);
