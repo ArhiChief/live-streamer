@@ -348,13 +348,13 @@ void HimppIrCut::sensor_timer_handler(ev::timer& w, int revents)
 		//I converted this to work with a digital sensor. inval gives us the state of the LEDs
 
 		if (_status == IRCUT_ON && inval ==0){
-			if (++_debounce_count >= 3) {
+			if (++_debounce_count >= DIGITAL_DEBOUNCE) {
 				ircut_off();
 				_debounce_count = 0;
 			}
 		}
 		else if (_status == IRCUT_OFF && inval ==1){
-			if (++_debounce_count >= 3) {
+			if (++_debounce_count >= DIGITAL_DEBOUNCE) {
 				ircut_on();
 				_debounce_count = 0;
 			}
