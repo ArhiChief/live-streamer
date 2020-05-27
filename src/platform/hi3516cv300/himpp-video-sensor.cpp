@@ -279,7 +279,7 @@ static ISP_PUB_ATTR_S sony_imx323_pub_attr = {
 };
 
 static VI_DEV_ATTR_S sony_imx323_dev_attr = {
-	.enIntfMode     = VI_MODE_DIGITAL_CAMERA,
+	.enIntfMode     = VI_MODE_MIPI,
 	.enWorkMode     = VI_WORK_MODE_1Multiplex,
 	.au32CompMask   = { 0xFFF0000, 0x0 },
 	.enScanMode     = VI_SCAN_PROGRESSIVE,
